@@ -1,22 +1,33 @@
 <template>
-  <div>
-    <i>({{ message.id }})</i> {{ message.text }}
-    <span style="position: absolute; right: 0">
-        <input type="button" value="Edit" @click="edit"/>
-        <input type="button" value="X" @click="del"/>
-        </span>
-  </div>
+  <v-card class="my-2">
+    <v-card-text>
+      <i>({{ message.id }})</i>
+      {{ message.text }}
+    </v-card-text>
+    <media v-if="message.link" :message="message"></media>
+    <v-card-actions>
+      <v-btn color="primary" elevation="0" outlined small @click="edit">Edit</v-btn>
+      <v-btn color="error" outlined small @click="del">
+        <v-icon>mdi-delete</v-icon>
+      </v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
+import {mapActions} from 'vuex'
+import Media from "components/media/Media.vue";
+
 export default {
-  props: ['message', 'editMessage', 'deleteMessage', 'messages'],
+  props: ['message', 'editMessage'],
+  components: {Media},
   methods: {
+    ...mapActions(['removeMessageAction']),
     edit() {
       this.editMessage(this.message)
     },
     del() {
-      this.deleteMessage(this.message)
+      this.removeMessageAction(this.message)
     }
   }
 }

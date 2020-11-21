@@ -9,5 +9,5 @@ public class SarafanApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SarafanApplication.class, args);
 	}
-
+//todo css-loader <- old version 1.*.*!
 }

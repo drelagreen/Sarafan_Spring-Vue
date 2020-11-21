@@ -1,16 +1,21 @@
 <template>
-  <div>
-    <input v-model="text" placeholder="Write something" type="text"/>
-    <input type="button" value="Save" @click="save"/>
-  </div>
+  <v-row align-content="center">
+    <v-text-field
+        v-model="text"
+        label="New message"
+        placeholder="Write something"/>
+    <v-btn class="mx-2 my-1 py-2" color="primary" elevation="1" @click="save">
+      <v-icon>
+        mdi-plus
+      </v-icon>
+    </v-btn>
+  </v-row>
 </template>
 
 <script>
-import {sendMessage} from "util/ws";
-import {getIndex} from "util/collections";
-
+import {mapActions} from 'vuex'
 export default {
-  props: ['messages', 'messageAttr'],
+  props: ['messageAttr'],
   data() {
     return {
       text: '',
@@ -18,36 +23,26 @@ export default {
     }
   },
   watch: {
-    messageAttr: function (newVal, oldVal) {
+    messageAttr: function (newVal) {
       this.text = newVal.text
       this.id = newVal.id
     }
   },
   methods: {
+    ...mapActions(['updateMessageAction','addMessageAction']),
     save() {
-      sendMessage({id: this.id, text: this.text})
+      const message = {
+        id: this.id,
+        text: this.text
+      };
+
+      if (this.id) {
+        this.updateMessageAction(message)
+      } else {
+        this.addMessageAction(message)
+      }
       this.text = ''
       this.id = ''
-
-      //   const message = {text: this.text};
-      //
-      //   if (this.id) {
-      //     this.$resource('/message{/id}').update({id: this.id}, message).then(result =>
-      //         result.json().then(data => {
-      //           const index = getIndex(this.messages, data.id);
-      //           this.messages.splice(index, 1, data)
-      //           this.text = ''
-      //           this.id = ''
-      //         })
-      //     )
-      //   } else {
-      //     this.$resource('/message{/id}').save({}, message).then(result =>
-      //         result.json().then(data => {
-      //           this.messages.push(data)
-      //           this.text = ''
-      //         })
-      //     )
-      //   }
     }
   }
 }
