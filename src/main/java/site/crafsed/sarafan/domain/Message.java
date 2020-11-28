@@ -1,20 +1,27 @@
 package site.crafsed.sarafan.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table
-public class Message {
+@JsonIdentityInfo(
+        property = "id",
+        generator = ObjectIdGenerators.PropertyGenerator.class
+)
+public class Message implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonView(Views.Id.class)
-    private long id;
-
+    private Long id;
     @JsonView(Views.IdName.class)
     private String text;
 
@@ -22,6 +29,15 @@ public class Message {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonView(Views.FullMessage.class)
     private LocalDateTime creationDate;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonView(Views.FullMessage.class)
+    private User author;
+
+    @OneToMany(mappedBy = "message", orphanRemoval = true)
+    @JsonView(Views.FullMessage.class)
+    private List<Comment> comments;
 
     @JsonView(Views.FullMessage.class)
     private String link;
@@ -31,23 +47,6 @@ public class Message {
     private String linkDescription;
     @JsonView(Views.FullMessage.class)
     private String linkCover;
-
-    @Override
-    public String toString() {
-        return "Message{" +
-                "id=" + id +
-                ", text='" + text + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Message message = (Message) o;
-        return id == message.id &&
-                Objects.equals(text, message.text);
-    }
 
     @Override
     public int hashCode() {
@@ -108,5 +107,21 @@ public class Message {
 
     public void setLinkCover(String linkCover) {
         this.linkCover = linkCover;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

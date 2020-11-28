@@ -1,5 +1,5 @@
 package site.crafsed.sarafan.dto;
 
 public enum ObjectType {
-    MESSAGE
+    MESSAGE, COMMENT
 }

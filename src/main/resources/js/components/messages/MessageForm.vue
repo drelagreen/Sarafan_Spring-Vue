@@ -3,8 +3,10 @@
     <v-text-field
         v-model="text"
         label="New message"
-        placeholder="Write something"/>
-    <v-btn class="mx-2 my-1 py-2" color="primary" elevation="1" @click="save">
+        placeholder="Write something"
+        @keyup.enter="save"
+    />
+    <v-btn class="mx-2 my-1 py-2" icon color="primary" elevation="1" @click="save">
       <v-icon>
         mdi-plus
       </v-icon>
@@ -14,6 +16,7 @@
 
 <script>
 import {mapActions} from 'vuex'
+
 export default {
   props: ['messageAttr'],
   data() {
@@ -29,7 +32,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateMessageAction','addMessageAction']),
+    ...mapActions(['updateMessageAction', 'addMessageAction']),
     save() {
       const message = {
         id: this.id,
